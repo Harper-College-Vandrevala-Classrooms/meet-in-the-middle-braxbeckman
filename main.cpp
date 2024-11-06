@@ -1,6 +1,7 @@
 #include <cctype>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 double findMedian(std::string filename);
 
@@ -8,24 +9,24 @@ int main()
 {
   std::string filename{"data.csv"};
   bool accepted{};
-  // while (!accepted)
-  // {
-  //   std::cout << "Please enter your desired filename: ";
-  //   getline(std::cin, filename);
-  //
-  //   {
-  //     std::ifstream test(filename, std::fstream::in);
-  //     if (test.fail())
-  //     {
-  //       std::cerr << "Failed to open file" << std::endl;
-  //     }
-  //     else
-  //     {
-  //       accepted = true;
-  //       test.close();
-  //     }
-  //   }
-  // }
+  while (!accepted)
+  {
+    std::cout << "Please enter your desired filename: ";
+    getline(std::cin, filename);
+
+    {
+      std::ifstream test(filename, std::fstream::in);
+      if (test.fail())
+      {
+        std::cerr << "Failed to open file" << std::endl;
+      }
+      else
+      {
+        accepted = true;
+        test.close();
+      }
+    }
+  }
   std::cout << "Median is: " << findMedian(filename) << std::endl;
 }
 
@@ -48,34 +49,18 @@ double findMedian(std::string filename)
   while (!inputStream.eof())
   {
     std::string line{};
-    std::string tmp{};
-    // std::cout << "In the while loop" << std::endl;
+    std::string number{};
 
     getline(inputStream, line);
-    // std::cout << "After the getline()" << std::endl;
-    for (char c : line)
+    std::stringstream sstream(line);
+
+    while (sstream >> number)
     {
-      std::cout << "\n--new loop--\n" << std::endl;
-      if (isdigit(c))
-      {
-        tmp += c;
-        std::cout << "tmp = " << tmp << std::endl;
-        continue;
-      }
-      else if (c == ',')
-      {
-        std::cout << "tmp = " << tmp << std::endl;
-        datapoints.push_back(stod(tmp));
-        tmp = "";
-        continue;
-      }
-      else
-      {
-        std::cout << "tmp = " << tmp << std::endl;
-        continue;
-      }
+      if (number.back() == ',')
+        number.pop_back();
+
+      datapoints.push_back(stod(number));
     }
-    // datapoints.push_back(stod(tmp));
   }
 
   int vSize = datapoints.size();
