@@ -3,7 +3,11 @@
 #include <iostream>
 #include <sstream>
 
-double findMedian(std::string filename);
+std::vector<double> datapoints{};
+
+void logFile(std::string filename);
+double findMedian();
+double findMean();
 
 int main()
 {
@@ -27,20 +31,19 @@ int main()
       }
     }
   }
-  std::cout << "Median is: " << findMedian(filename) << std::endl;
+
+  logFile(filename);
+  std::cout << "Median is: " << findMedian() << std::endl;
+  std::cout << "Mean is: " << findMean() << std::endl;
 }
 
-double findMedian(std::string filename)
+void logFile(std::string filename)
 {
-  std::vector<double> datapoints{};
   std::ifstream inputStream;
-  double median{};
-
   inputStream.open(filename, std::fstream::in);
   if (inputStream.fail())
   {
     std::cerr << "Error opening file!" << std::endl;
-    return NAN;
   }
 
   // std::cout << "File succesfully opened" << std::endl;
@@ -58,10 +61,14 @@ double findMedian(std::string filename)
     {
       if (number.back() == ',')
         number.pop_back();
-
       datapoints.push_back(stod(number));
     }
   }
+}
+
+double findMedian()
+{
+  float median{};
 
   int vSize = datapoints.size();
   if (vSize % 2 == 0)
@@ -79,4 +86,15 @@ double findMedian(std::string filename)
     std::cerr << "Error grabbing median numbers, it grabbed more than two?" << std::endl;
     return NAN;
   }
+}
+
+double findMean()
+{
+  double total{};
+  int dSize = datapoints.size();
+  for (double d : datapoints)
+  {
+    total += d;
+  }
+  return (total / dSize);
 }
